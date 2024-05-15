@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "541896515032",
+    "project_id": "pet-haven-44090",
+    "storage_bucket": "pet-haven-44090.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541896515032:android:1f838011b6daaa1c8fe6ad",
+        "android_client_info": {
+          "package_name": "com.example.pet_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "541896515032-k2b7ktg2ul94ac0vq9aqtd2j2v6p36ej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pet_app",
+            "certificate_hash": "b9cb4f005093a3ec53190732a1e6ce0ee7706dcc"
+          }
+        },
+        {
+          "client_id": "541896515032-ahq95e4ecb8dbq8n659a4pbevgo5e7q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHF1yWru5zIAL8zuOdSvtk8UfMMIBx64Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "541896515032-ahq95e4ecb8dbq8n659a4pbevgo5e7q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
