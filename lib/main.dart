@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget {
       ),
       home: AuthGate(), // Use AuthGate as the initial screen
       routes: {
-        '/signin': (context) => SignInScreen(onTap: () {}), // Route for SignInScreen
-        '/signup': (context) => SignUpScreen(onTap: () {}), // Route for SignUpScreen
+       //  '/signin': (context) => SignInScreen(onTap: () {}), // Route for SignInScreen
+        // '/signup': (context) => SignUpScreen(onTap: () {}), // Route for SignUpScreen
         '/home': (context) => HomeScreen(), // Route for HomeScreen
       },
     );
