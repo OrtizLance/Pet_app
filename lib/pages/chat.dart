@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_app/pages/chatting.dart';
 
+import '../components/drawer.dart';
+import 'user.dart';
+
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
@@ -13,10 +16,29 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  void goToProfilePage() {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserScreen(),
+      ),
+    );
+  }
+
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text(' '),
+      ),
+      drawer: MyDrawer(
+        onProfileTap: goToProfilePage,
+        onSignOut: signOut,
       ),
       body: _buildUserList(),
     );
@@ -55,8 +77,8 @@ class _ChatScreenState extends State<ChatScreen> {
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
         padding: const EdgeInsets.all(20),
         child: ListTile(
-          leading: const Icon(Icons.person, size: 25, color: Colors.white), // Add the icon here
-          title: Text(data['email'], style: TextStyle(color: Colors.white)), // Ensure text color contrasts with the background
+          leading: const Icon(Icons.person, size: 25, color: Colors.white),
+          title: Text(data['email'], style: const TextStyle(color: Colors.white)),
           onTap: () {
             Navigator.push(
               context,

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:pet_app/pages/home.dart';
+import 'package:pet_app/pages/center.dart';
 import 'package:pet_app/services/auth/auth_gate.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
-import 'signin_screen.dart';
-import 'signup_screen.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

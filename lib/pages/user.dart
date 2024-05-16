@@ -11,6 +11,15 @@ class UserScreen extends StatelessWidget {
     User? user = FirebaseAuth.instance.currentUser;
     AuthService authService = Provider.of<AuthService>(context);
 
+    // Debugging: Print the user information
+    if (user != null) {
+      print('User photoURL: ${user.photoURL}');
+      print('User displayName: ${user.displayName}');
+      print('User email: ${user.email}');
+    } else {
+      print('User is not logged in.');
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -47,6 +56,25 @@ class UserScreen extends StatelessWidget {
                               width: 100,
                               height: 100,
                               fit: BoxFit.cover,
+                              loadingBuilder: (context, child, progress) {
+                                if (progress == null) return child;
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: progress.expectedTotalBytes != null
+                                        ? progress.cumulativeBytesLoaded / (progress.expectedTotalBytes ?? 1)
+                                        : null,
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                print('Error loading image: $error');
+                                return Image.network(
+                                  'https://example.com/placeholder.png',
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -318,3 +346,4 @@ class UserScreen extends StatelessWidget {
     );
   }
 }
+

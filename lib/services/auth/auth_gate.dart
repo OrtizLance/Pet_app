@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_app/pages/home.dart';
+import 'package:pet_app/pages/center.dart';
 import 'signin_or_signup.dart'; // Import your SigninOrSignup widget
 
 class AuthGate extends StatelessWidget {

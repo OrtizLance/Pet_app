@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:pet_app/util/progress_bar.dart';
-
 import '../stories/story_1.dart';
 import '../stories/story_2.dart';
 import '../stories/story_3.dart';
