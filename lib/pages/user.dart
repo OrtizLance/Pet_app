@@ -1,23 +1,81 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_app/services/auth/auth_services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_app/components/text_box.dart';
 import 'package:provider/provider.dart';
+import 'package:pet_app/services/auth/auth_services.dart';
 
-class UserScreen extends StatelessWidget {
+class UserScreen extends StatefulWidget {
   const UserScreen({Key? key}) : super(key: key);
 
+  @override
+  State<UserScreen> createState() => _UserScreenState();
+}
+
+class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
     AuthService authService = Provider.of<AuthService>(context);
+    final usersCollection = FirebaseFirestore.instance.collection("Users");
 
-    // Debugging: Print the user information
-    if (user != null) {
-      print('User photoURL: ${user.photoURL}');
-      print('User displayName: ${user.displayName}');
-      print('User email: ${user.email}');
-    } else {
-      print('User is not logged in.');
+    Future<void> editField(String field) async {
+      String newValue = "";
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.grey[900],
+          title: Text(
+            "Edit $field",
+            style: const TextStyle(color: Colors.white),
+          ),
+          content: TextField(
+            autofocus: true,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "Enter new $field",
+              hintStyle: TextStyle(color: Colors.grey),
+            ),
+            onChanged: (value) {
+              newValue = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: Text(
+                'Save',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () => Navigator.of(context).pop(newValue),
+            ),
+          ],
+        ),
+      );
+
+      if (newValue.trim().isNotEmpty) {
+        await usersCollection.doc(user?.email).update({field: newValue});
+      }
+    }
+
+    String getUsername(User? user, Map<String, dynamic>? userData) {
+      if (user != null) {
+        if (user.providerData.any((info) => info.providerId == 'google.com')) {
+          // User signed in with Google
+          return user.displayName ?? 'No username available';
+        } else {
+          // User signed in with email/password
+          return userData?['username'] ?? user.email?.split('@')[0] ?? 'No username available';
+        }
+      }
+      return 'No username available';
     }
 
     return Scaffold(
@@ -27,315 +85,157 @@ class UserScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         elevation: 0,
       ),
-      body: Align(
-        alignment: Alignment.center,
+      body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 140,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 12),
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColorDark,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(2),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.network(
-                              user?.photoURL ?? 'https://example.com/placeholder.png',
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                              loadingBuilder: (context, child, progress) {
-                                if (progress == null) return child;
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: progress.expectedTotalBytes != null
-                                        ? progress.cumulativeBytesLoaded / (progress.expectedTotalBytes ?? 1)
-                                        : null,
-                                  ),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                print('Error loading image: $error');
-                                return Image.network(
-                                  'https://example.com/placeholder.png',
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
+            Stack(
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        'https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fG1vdW50YWluc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
                       ),
                     ),
                   ),
-                ],
+                ),
+                Positioned(
+                  top: 20,
+                  left: 10,
+                  child: CircleAvatar(
+                    radius: 45,
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                    child: CircleAvatar(
+                      radius: 43,
+                      backgroundImage: user?.photoURL != null
+                          ? NetworkImage(user!.photoURL!)
+                          : AssetImage('assets/default_profile.png') as ImageProvider,
+                      onBackgroundImageError: (_, __) {
+                        setState(() {
+                          user = null;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 10, 0, 0),
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: usersCollection.doc(user?.email).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  }
+                  if (!snapshot.hasData || snapshot.data?.data() == null) {
+                    return Text(
+                      getUsername(user, null),
+                      style: GoogleFonts.montserrat(
+                        textStyle: Theme.of(context).textTheme.displayLarge,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    );
+                  }
+
+                  final userData = snapshot.data!.data() as Map<String, dynamic>;
+                  return Text(
+                    getUsername(user, userData),
+                    style: GoogleFonts.montserrat(
+                      textStyle: Theme.of(context).textTheme.displayLarge,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  );
+                },
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 16, 0, 12),
+              padding: const EdgeInsets.fromLTRB(24, 4, 0, 16),
               child: Text(
-                user != null ? user.displayName ?? 'Unknown' : 'User not logged in.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Outfit',
-                  fontSize: 24,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-            ),
-            Text(
-              user != null ? user.email ?? '' : '',
-              style: TextStyle(
-                fontFamily: 'Readex Pro',
-                fontSize: 18,
-                color: Theme.of(context).primaryColorDark,
+                user?.email ?? 'andrew@domainname.com',
+                style: GoogleFonts.montserrat(),
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(16, 24, 16, 32),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 12),
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColorDark,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: Icon(
-                              Icons.work_outline,
-                              color: Theme.of(context).primaryColor,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Passenger Documents',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 12),
-                            child: Container(
-                              width: 44,
-                              height: 44,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColorDark,
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: Icon(
-                                Icons.notifications_outlined,
-                                color: Theme.of(context).primaryColor,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'Tracker Notifications',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Readex Pro',
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 12),
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColorDark,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: Icon(
-                              Icons.help_outline_outlined,
-                              color: Theme.of(context).primaryColor,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Help Center',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.fromLTRB(24, 4, 0, 0),
+              child: Text(
+                'Your Account',
+                style: GoogleFonts.montserrat(),
               ),
             ),
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                height: 400,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorDark,
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 3,
-                      color: Color(0x33000000),
-                      offset: Offset(0, -1),
-                    )
+            StreamBuilder<DocumentSnapshot>(
+              stream: usersCollection.doc(user?.email).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
+                if (!snapshot.hasData || snapshot.data?.data() == null) {
+                  return Center(
+                    child: Text('No user data found.'),
+                  );
+                }
+
+                final userData = snapshot.data!.data() as Map<String, dynamic>;
+
+                return Column(
+                  children: [
+                    MyTextBox(
+                      text: getUsername(user, userData),
+                      sectionName: 'username',
+                      icon: Icons.person,
+                      onPressed: () => editField('username'),
+                    ),
+                    MyTextBox(
+                      text: userData['bio'] ?? 'No bio available',
+                      sectionName: 'bio',
+                      icon: Icons.person,
+                      onPressed: () => editField('bio'),
+                    ),
                   ],
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
+                );
+              },
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                child: OutlinedButton(
+                  onPressed: () {
+                    authService.signOut();
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    side: BorderSide(
+                      color: Theme.of(context).dividerColor,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(38),
+                    ),
                   ),
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 12),
-                              child: Text(
-                                'Settings',
-                                style: TextStyle(
-                                  fontFamily: 'Outfit',
-                                  fontSize: 20,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.work_outline,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              title: Text('Phone Number'),
-                              trailing: Text(
-                                'Add Number',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.language_rounded,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              title: Text('Language'),
-                              trailing: Text(
-                                'English (eng)',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.money_rounded,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              title: Text('Currency'),
-                              trailing: Text(
-                                'US Dollar (\$)',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.edit,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              title: Text('Profile Settings'),
-                              trailing: Text(
-                                'Edit Profile',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.notifications_active,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              title: Text('Notification Settings'),
-                              trailing: Icon(
-                                Icons.chevron_right_rounded,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.login_rounded,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              title: Text('Log out of account'),
-                              trailing: TextButton(
-                                onPressed: () {
-                                  authService.signOut();
-                                },
-                                child: Text(
-                                  'Log Out?',
-                                  style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    'Log Out',
+                    style: GoogleFonts.montserrat(),
                   ),
                 ),
               ),
@@ -346,4 +246,3 @@ class UserScreen extends StatelessWidget {
     );
   }
 }
-

@@ -19,7 +19,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId: '541896515032-ahq95e4ecb8dbq8n659a4pbevgo5e7q6.apps.googleusercontent.com',
+    clientId:
+        '541896515032-ahq95e4ecb8dbq8n659a4pbevgo5e7q6.apps.googleusercontent.com',
   );
 
   void signIn() async {
@@ -79,78 +80,89 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 10),
-                Lottie.network(
-                  'https://lottie.host/27031abd-ed27-4022-b9b5-d20cac089f26/5hCEf8Xmfj.json',
-                  height: 200,
-                ),
-                const SizedBox(height: 30),
-                const Text(
-                  'Wonder Pets!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+      body: Container(
+        color: Colors.indigo[300], // Set the background color to brown
+        child: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 10),
+                  Lottie.network(
+                    'https://lottie.host/27031abd-ed27-4022-b9b5-d20cac089f26/5hCEf8Xmfj.json',
+                    height: 200,
                   ),
-                ),
-                const SizedBox(height: 50),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(8.0),
+                  const SizedBox(height: 30),
+                  const Text(
+                    'P E T  H A V E N',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  child: MyTextField(
-                    controller: emailController,
-                    hintText: 'Email',
-                    obscureText: false,
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: MyTextField(
-                    controller: passwordController,
-                    hintText: 'Password',
-                    obscureText: true,
-                  ),
-                ),
-                const SizedBox(height: 25.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: MyButton(onTap: signIn, text: 'Sign in'),
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Not a member yet?'),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: widget.onTap,
-                      child: const Text(
-                        'Sign up Here',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 50, right: 50),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.brown[200],
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: MyTextField(
+                        controller: emailController,
+                        hintText: ' Email',
+                        obscureText: false,
+                        borderRadius: 20.0, // Adjust the radius here
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: signInWithGoogle,
-                  child: const Text('Sign in with Google'),
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 50, right: 50),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.brown[200],
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: MyTextField(
+                        controller: passwordController,
+                        hintText: ' Password',
+                        obscureText: true,
+                        borderRadius: 20.0, // Adjust the radius here
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 25.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                    child: MyButton(onTap: signIn, text: 'Sign in'),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Not a member yet?'),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: widget.onTap,
+                        child: const Text(
+                          'Sign up Here',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20, left: 100, right: 100),
+                    child: MyButton(onTap: signInWithGoogle, text: 'Sign in with Google'),
+                  )
+                ],
+              ),
             ),
           ),
         ),

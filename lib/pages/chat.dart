@@ -34,13 +34,26 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(' '),
+        title: const Text('P E T  H A V E N'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: signOut,
+          ),
+        ],
       ),
       drawer: MyDrawer(
         onProfileTap: goToProfilePage,
         onSignOut: signOut,
       ),
+      backgroundColor: Colors.grey[400], // Set your desired background color here
       body: _buildUserList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add functionality to start a new chat
+        },
+        child: const Icon(Icons.message),
+      ),
     );
   }
 
@@ -49,7 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Text('Error');
+          return const Center(child: Text('Error loading users'));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -70,26 +83,36 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (_auth.currentUser!.email != data['email']) {
       return Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-        padding: const EdgeInsets.all(20),
-        child: ListTile(
-          leading: const Icon(Icons.person, size: 25, color: Colors.white),
-          title: Text(data['email'], style: const TextStyle(color: Colors.white)),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatPage(
-                  receiverUserEmail: data['email'],
-                  receiverUserID: data['uid'],
-                ),
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            leading: CircleAvatar(
+              child: const Icon(Icons.person, color: Colors.white),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text(
+              data['email'],
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
               ),
-            );
-          },
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                    receiverUserEmail: data['email'],
+                    receiverUserID: data['uid'],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       );
     } else {

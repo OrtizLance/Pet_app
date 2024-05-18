@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_app/pages/chat.dart';
-import 'package:pet_app/pages/home1.dart';
+import 'package:pet_app/pages/home.dart';
 import 'package:pet_app/pages/user.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
 import 'package:provider/provider.dart';

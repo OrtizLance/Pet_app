@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +17,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   void signUp() async {
     if (passwordController.text != confirmPasswordController.text) {
@@ -30,8 +31,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final authService = Provider.of<AuthService>(context, listen: false);
 
     try {
-      await authService.signUpWithEmailandPassword(
-          emailController.text, passwordController.text);
+      UserCredential userCredential =
+          await authService.signUpWithEmailandPassword(
+              emailController.text, passwordController.text);
+
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(userCredential.user!.email)
+          .set({
+                'username': emailController.text.split('@')[0],
+                'bio' : 'Empty bio'
+          });
+
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

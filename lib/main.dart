@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pet_app/signin_screen.dart';
+import 'package:pet_app/signup_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:pet_app/pages/center.dart';
 import 'package:pet_app/services/auth/auth_gate.dart';
@@ -27,8 +29,8 @@ class MyApp extends StatelessWidget {
       ),
       home: AuthGate(), // Use AuthGate as the initial screen
       routes: {
-       //  '/signin': (context) => SignInScreen(onTap: () {}), // Route for SignInScreen
-        // '/signup': (context) => SignUpScreen(onTap: () {}), // Route for SignUpScreen
+        '/signin': (context) => SignInScreen(onTap: () {}), // Route for SignInScreen
+        '/signup': (context) => SignUpScreen(onTap: () {}), // Route for SignUpScreen
         '/home': (context) => HomeScreen(), // Route for HomeScreen
       },
     );

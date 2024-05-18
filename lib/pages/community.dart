@@ -69,10 +69,10 @@ class _CommunityPageState extends State<CommunityPage> {
       appBar: AppBar(
         title: const Text(
           'S T O R I E S',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.white,
-      ),
+        backgroundColor: Colors.brown,
+      ),  
       drawer: MyDrawer(
         onProfileTap: goToProfilePage,
         onSignOut: signOut,

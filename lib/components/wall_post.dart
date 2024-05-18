@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pet_app/components/comment_button.dart';
 import 'package:pet_app/components/like_button.dart';
+import 'package:pet_app/components/comment.dart';
+import 'package:pet_app/helper/helper_methods.dart';
 
 class WallPost extends StatefulWidget {
   final String message;
@@ -22,9 +25,9 @@ class WallPost extends StatefulWidget {
 }
 
 class _WallPostState extends State<WallPost> {
-  //user from firebase
   final currentUser = FirebaseAuth.instance.currentUser!;
   bool isLiked = false;
+  final _commentTextController = TextEditingController();
 
   @override
   void initState() {
@@ -37,9 +40,7 @@ class _WallPostState extends State<WallPost> {
       isLiked = !isLiked;
     });
 
-    //access docs in firebase
-    DocumentReference postRef =
-        FirebaseFirestore.instance.collection('User Posts').doc(widget.postId);
+    DocumentReference postRef = FirebaseFirestore.instance.collection('User Posts').doc(widget.postId);
 
     if (isLiked) {
       postRef.update({
@@ -52,6 +53,44 @@ class _WallPostState extends State<WallPost> {
     }
   }
 
+  void addComment(String commentText) {
+    FirebaseFirestore.instance.collection("User Posts").doc(widget.postId).collection("Comments").add({
+      "CommentText": commentText,
+      "CommentedBy": currentUser.email,
+      "CommentTime": Timestamp.now()
+    });
+  }
+
+  void showCommentDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Add Comment"),
+        content: TextField(
+          controller: _commentTextController,
+          decoration: const InputDecoration(hintText: "Write a Comment.."),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _commentTextController.clear();
+            },
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              addComment(_commentTextController.text);
+              Navigator.pop(context);
+              _commentTextController.clear();
+            },
+            child: const Text("Post"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,31 +98,85 @@ class _WallPostState extends State<WallPost> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
       ),
-      margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-      padding: EdgeInsets.all(25),
-      child: Row(
+      margin: const EdgeInsets.only(top: 25, left: 25, right: 25),
+      padding: const EdgeInsets.all(25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            children: [
-              LikeButton(
-                isLiked: isLiked,
-                onTap: toggleLike,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Text(widget.likes.length.toString(),
-              style: TextStyle(color: Colors.grey),),
-            ],
-          ),
-          const SizedBox(width: 20),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.user),
+              Text(widget.message),
               const SizedBox(height: 10),
-              Text(widget.message)
+              Text(
+                widget.user,
+                style: TextStyle(color: Colors.grey[500]),
+              ),
             ],
+          ),
+          const SizedBox(width: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  LikeButton(
+                    isLiked: isLiked,
+                    onTap: toggleLike,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    widget.likes.length.toString(),
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 10),
+              Column(
+                children: [
+                  CommentButton(onTap: showCommentDialog),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    widget.likes.length.toString(),
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(width: 10),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("User Posts")
+                .doc(widget.postId)
+                .collection("Comments")
+                .orderBy("CommentTime", descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: snapshot.data!.docs.map((doc) {
+                  final commentData = doc.data() as Map<String, dynamic>;
+
+                  return Comment(
+                    text: commentData["CommentText"],
+                    user: commentData["CommentedBy"],
+                    time: formatDate(commentData["CommentTime"]),
+                  );
+                }).toList(),
+              );
+            },
           ),
         ],
       ),
