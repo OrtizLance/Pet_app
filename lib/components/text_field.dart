@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
   final double borderRadius;
+  final IconData icon;
+  final double iconPadding;
 
   const MyTextField({
     Key? key,
     required this.controller,
     required this.hintText,
     required this.obscureText,
-    this.borderRadius = 8.0, // Default radius
+    this.borderRadius = 5.0,
+    required this.icon,
+    this.iconPadding = 15.0, // Default icon padding
   }) : super(key: key);
 
   @override
@@ -31,7 +36,13 @@ class MyTextField extends StatelessWidget {
         fillColor: Colors.grey[200],
         filled: true,
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey),
+        hintStyle: GoogleFonts.montserrat(
+          textStyle: TextStyle(color: Colors.grey[400]),
+        ),
+        prefixIcon: Padding(
+          padding: EdgeInsets.all(iconPadding),
+          child: Icon(icon),
+        ),
       ),
     );
   }

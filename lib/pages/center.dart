@@ -4,8 +4,6 @@ import 'package:pet_app/pages/home.dart';
 import 'package:pet_app/pages/user.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
 import 'package:provider/provider.dart';
-import 'community.dart';
-
 
 
 class HomeScreen extends StatefulWidget {
@@ -16,57 +14,53 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
 
-  
-
-  int myIndex = 0;
-
-  List<Widget> widgetList = const [
+  final List<Widget> _pages = const [
     HomePage(),
-    CommunityPage(),
     ChatScreen(),
     UserScreen(),
   ];
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _signOut(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    authService.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
-    void signOut() {
-      final authService = Provider.of<AuthService>(context, listen: false);
-      authService.signOut();
-    }
-
     return Scaffold(
-      body: Center(
-        child: widgetList[myIndex],
-      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.shifting,
+        backgroundColor: Colors.grey[900], // Set background color to grey
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.grey, // Grey color for unselected items
         selectedFontSize: 14,
         unselectedFontSize: 12,
-        onTap: (index) {
-          setState(() {
-            myIndex = index;
-          });
-        },
-        currentIndex: myIndex,
-        items: const [
+        onTap: _onItemTapped,
+        currentIndex: _selectedIndex,
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: 'Community',
+            backgroundColor: Colors.grey[900], // Match background color
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: 'Chat',
+            backgroundColor: Colors.grey[900], // Match background color
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             label: 'User',
+            backgroundColor: Colors.grey[900], // Match background color
           ),
         ],
       ),

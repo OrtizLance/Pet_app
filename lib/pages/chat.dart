@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_app/pages/chatting.dart';
-
-import '../components/drawer.dart';
-import 'user.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -16,16 +14,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void goToProfilePage() {
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => UserScreen(),
-      ),
-    );
-  }
-
   void signOut() {
     FirebaseAuth.instance.signOut();
   }
@@ -34,17 +22,16 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('P E T  H A V E N'),
+        title: Text(
+          'P E T  H A V E N',
+          style: GoogleFonts.montserrat(),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: signOut,
           ),
         ],
-      ),
-      drawer: MyDrawer(
-        onProfileTap: goToProfilePage,
-        onSignOut: signOut,
       ),
       backgroundColor: Colors.grey[400], // Set your desired background color here
       body: _buildUserList(),
@@ -62,61 +49,64 @@ class _ChatScreenState extends State<ChatScreen> {
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Center(child: Text('Error loading users'));
+          return Center(
+            child: Text('Error loading users', style: GoogleFonts.montserrat()),
+          );
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
 
+        final currentUserEmail = _auth.currentUser!.email;
+
         return ListView(
-          children: snapshot.data!.docs
-              .map<Widget>((doc) => _buildUserListItem(doc))
-              .toList(),
-        );
-      },
-    );
-  }
-
-  Widget _buildUserListItem(DocumentSnapshot document) {
-    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-
-    if (_auth.currentUser!.email != data['email']) {
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: ListTile(
-            leading: CircleAvatar(
-              child: const Icon(Icons.person, color: Colors.white),
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-            ),
-            title: Text(
-              data['email'],
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).textTheme.bodyLarge!.color,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(
-                    receiverUserEmail: data['email'],
-                    receiverUserID: data['uid'],
+          children: snapshot.data!.docs.map<Widget>((doc) {
+            Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+            if (data['email'] != currentUserEmail) {
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: data['photoURL'] != null ? NetworkImage(data['photoURL']) : null,
+                        child: data['photoURL'] == null ? const Icon(Icons.person, color: Colors.white, size: 15) : null,
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                      ),
+                      title: Text(
+                        data['email'],
+                        style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                              receiverUserEmail: data['email'],
+                              receiverUserID: data['uid'],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               );
-            },
-          ),
-        ),
-      );
-    } else {
-      return Container();
-    }
+            } else {
+              return Container();
+            }
+          }).toList(),
+        );
+      },
+    );
   }
 }

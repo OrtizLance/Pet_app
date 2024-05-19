@@ -6,9 +6,9 @@ import 'my_list_tile.dart';
 class MyDrawer extends StatelessWidget {
   final void Function()? onProfileTap;
   final void Function()? onSignOut;
-  // final void Function()? onChat;
+  final void Function()? onChat;
   // final void Function()? onCommunity;
-  const MyDrawer({super.key, required this.onProfileTap, required this.onSignOut});
+  const MyDrawer({super.key, required this.onProfileTap, required this.onSignOut, required this.onChat});
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +45,10 @@ class MyDrawer extends StatelessWidget {
            MyListTile(
             icon: Icons.chat,
             text: 'C H A T',
-            onTap: onSignOut,
+            onTap: onChat,
           ),
 
-          
-          MyListTile(
-            icon: Icons.add_box,
-            text: 'C O M M U N I T Y',
-            onTap: onSignOut,
-          ),
-
-
+      
 
            MyListTile(
             icon: Icons.logout,

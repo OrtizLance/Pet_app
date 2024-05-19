@@ -38,11 +38,11 @@ class MyTextBox extends StatelessWidget {
             ),
             title: Text(
               text,
-              style: GoogleFonts.montserrat(),
+              style: GoogleFonts.montserrat(fontSize: 12),
             ),
             subtitle: Text(
               sectionName,
-              style: GoogleFonts.montserrat(),
+              style: GoogleFonts.montserrat(fontSize: 20),
             ),
             trailing: IconButton(
               onPressed: onPressed,

@@ -6,6 +6,7 @@ import 'package:pet_app/services/auth/auth_services.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignInScreen extends StatefulWidget {
   final void Function()? onTap;
@@ -34,6 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
         SnackBar(
           content: Text(
             e.toString(),
+            style: GoogleFonts.montserrat(),
           ),
         ),
       );
@@ -71,6 +73,7 @@ class _SignInScreenState extends State<SignInScreen> {
         SnackBar(
           content: Text(
             'Error signing in with Google: $e',
+            style: GoogleFonts.montserrat(),
           ),
         ),
       );
@@ -90,77 +93,126 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 10),
+                
                   Lottie.network(
                     'https://lottie.host/27031abd-ed27-4022-b9b5-d20cac089f26/5hCEf8Xmfj.json',
                     height: 200,
                   ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    'P E T  H A V E N',
+                  const SizedBox(height: 10),
+                  Text(
+                    'PET HAVEN',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: GoogleFonts.nunito(
                       fontSize: 30,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(left: 50, right: 50),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.brown[200],
+                        color: Colors.black,
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: MyTextField(
                         controller: emailController,
                         hintText: ' Email',
                         obscureText: false,
-                        borderRadius: 20.0, // Adjust the radius here
+                        icon: Icons.email,
+                        borderRadius: 10.0, // Adjust the radius here
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 10.0),
                   Padding(
                     padding: const EdgeInsets.only(left: 50, right: 50),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.brown[200],
+                        color: Colors.black,
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: MyTextField(
                         controller: passwordController,
                         hintText: ' Password',
                         obscureText: true,
-                        borderRadius: 20.0, // Adjust the radius here
+                        icon: Icons.password,
+                        borderRadius: 10.0, // Adjust the radius here
                       ),
                     ),
                   ),
-                  const SizedBox(height: 25.0),
+                  const SizedBox(height: 20.0),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 80.0),
                     child: MyButton(onTap: signIn, text: 'Sign in'),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Not a member yet?'),
-                      const SizedBox(width: 4),
-                      GestureDetector(
-                        onTap: widget.onTap,
-                        child: const Text(
-                          'Sign up Here',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                      Text(
+                        'Or',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 15, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 20, left: 100, right: 100),
-                    child: MyButton(onTap: signInWithGoogle, text: 'Sign in with Google'),
-                  )
+                    padding: const EdgeInsets.only(
+                        bottom: 20, left: 100, right: 100),
+                    child: GestureDetector(
+                      onTap: signInWithGoogle,
+                      child: Container(
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/google_logo.png',
+                              height: 20,
+                              width: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Sign in with Google',
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Not a member yet?',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: widget.onTap,
+                        child: Text(
+                          'Sign up Here',
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

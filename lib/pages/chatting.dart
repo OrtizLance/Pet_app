@@ -121,6 +121,7 @@ class _ChatPageState extends State<ChatPage> {
               controller: _messageController,
               hintText: "Enter Message",
               obscureText: false,
+              icon: Icons.message,
             ),
           ),
 

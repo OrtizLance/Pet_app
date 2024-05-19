@@ -6,6 +6,7 @@ import 'package:pet_app/components/text_box.dart';
 import 'package:provider/provider.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
 
+
 class UserScreen extends StatefulWidget {
   const UserScreen({Key? key}) : super(key: key);
 
@@ -72,19 +73,24 @@ class _UserScreenState extends State<UserScreen> {
           return user.displayName ?? 'No username available';
         } else {
           // User signed in with email/password
-          return userData?['username'] ?? user.email?.split('@')[0] ?? 'No username available';
+          return userData?['username'] ??
+              user.email?.split('@')[0] ??
+              'No username available';
         }
       }
       return 'No username available';
     }
 
+
+   
+
+
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
-        elevation: 0,
       ),
+      
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -115,7 +121,8 @@ class _UserScreenState extends State<UserScreen> {
                       radius: 43,
                       backgroundImage: user?.photoURL != null
                           ? NetworkImage(user!.photoURL!)
-                          : AssetImage('assets/default_profile.png') as ImageProvider,
+                          : AssetImage('assets/default_profile.png')
+                              as ImageProvider,
                       onBackgroundImageError: (_, __) {
                         setState(() {
                           user = null;
@@ -152,7 +159,8 @@ class _UserScreenState extends State<UserScreen> {
                     );
                   }
 
-                  final userData = snapshot.data!.data() as Map<String, dynamic>;
+                  final userData =
+                      snapshot.data!.data() as Map<String, dynamic>;
                   return Text(
                     getUsername(user, userData),
                     style: GoogleFonts.montserrat(
@@ -202,14 +210,14 @@ class _UserScreenState extends State<UserScreen> {
                 return Column(
                   children: [
                     MyTextBox(
-                      text: getUsername(user, userData),
-                      sectionName: 'username',
+                      sectionName: getUsername(user, userData),
+                      text: 'Username',
                       icon: Icons.person,
                       onPressed: () => editField('username'),
                     ),
                     MyTextBox(
-                      text: userData['bio'] ?? 'No bio available',
-                      sectionName: 'bio',
+                      sectionName: userData['bio'] ?? 'No bio available',
+                      text: 'Bio',
                       icon: Icons.person,
                       onPressed: () => editField('bio'),
                     ),
