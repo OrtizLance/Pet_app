@@ -95,8 +95,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 children: [
                 
                   Lottie.network(
-                    'https://lottie.host/27031abd-ed27-4022-b9b5-d20cac089f26/5hCEf8Xmfj.json',
-                    height: 200,
+                    'https://lottie.host/807a4823-3d13-4823-ae87-5c2e374b28c1/VnlXCaSy7c.json',
+                    height: 400,
                   ),
                   const SizedBox(height: 10),
                   Text(
