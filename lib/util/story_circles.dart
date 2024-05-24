@@ -16,7 +16,7 @@ class StoryCircles extends StatelessWidget {
       onTap: function,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
+        child: Container( 
           height: 80,
           width: 80,
           decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blue),

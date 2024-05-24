@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
 import 'package:provider/provider.dart';
 import 'components/button.dart';
 import 'components/text_field.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignUpScreen extends StatefulWidget {
   final void Function()? onTap;
@@ -17,7 +19,8 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   void signUp() async {
     if (passwordController.text != confirmPasswordController.text) {
@@ -39,11 +42,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .collection("Users")
           .doc(userCredential.user!.email)
           .set({
-                'username': emailController.text.split('@')[0],
-                'bio' : 'Empty bio'
-          });
-
-
+        'username': emailController.text.split('@')[0],
+        'bio': 'Empty bio'
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -56,6 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.indigo[300],
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -65,42 +67,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 10),
-              const Column(
+              Column(
                 children: [
-                  Icon(
-                    Icons.pets,
-                    size: 120,
-                    color: Colors.grey,
+                  Lottie.network(
+                    'https://lottie.host/4e6b413e-2a2b-4cba-8654-153461902cb8/SFIgJXvg2r.json',
+                    height: 200,
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 15),
                   Text(
-                    'Sign up ',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+                    'Sign up',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.nunito(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 30),
               Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
+                
                 child: MyTextField(
                   controller: emailController,
                   hintText: 'Email',
                   obscureText: false,
                   icon: Icons.email,
+                  borderRadius: 10.0,
                 ),
               ),
               SizedBox(height: 20.0),
@@ -122,7 +114,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: passwordController,
                   hintText: 'Password',
                   obscureText: true,
-                  icon: Icons.password,
+                  icon: Icons.key,
+                  borderRadius: 10.0,
                 ),
               ),
               SizedBox(height: 25.0),
@@ -143,10 +136,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: confirmPasswordController,
                   hintText: 'Confirm Password',
                   obscureText: true,
-                  icon: Icons.password,
+                  icon: Icons.key,
+                  borderRadius: 10.0,
                 ),
               ),
-              SizedBox(height: 25.0),
+              SizedBox(height: 5.0),
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 20, 50, 0),
                 child: MyButton(onTap: signUp, text: 'Sign up'),

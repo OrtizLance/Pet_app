@@ -93,21 +93,28 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                
                   Lottie.network(
-                    'https://lottie.host/807a4823-3d13-4823-ae87-5c2e374b28c1/VnlXCaSy7c.json',
-                    height: 400,
+                    'https://lottie.host/4e6b413e-2a2b-4cba-8654-153461902cb8/SFIgJXvg2r.json',
+                    height: 200,
                   ),
                   const SizedBox(height: 10),
                   Text(
                     'PET HAVEN',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.nunito(
-                      fontSize: 30,
+                      fontSize: 40,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  Text(
+                    'Connecting pets and pet owners all over the world',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.nunito(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.only(left: 50, right: 50),
                     child: Container(
@@ -136,14 +143,14 @@ class _SignInScreenState extends State<SignInScreen> {
                         controller: passwordController,
                         hintText: ' Password',
                         obscureText: true,
-                        icon: Icons.password,
+                        icon: Icons.key,
                         borderRadius: 10.0, // Adjust the radius here
                       ),
                     ),
                   ),
                   const SizedBox(height: 20.0),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 80.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 120.0),
                     child: MyButton(onTap: signIn, text: 'Sign in'),
                   ),
                   const SizedBox(height: 15),
@@ -157,18 +164,24 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(
-                        bottom: 20, left: 100, right: 100),
+                        bottom: 20, left: 200, right: 200),
                     child: GestureDetector(
                       onTap: signInWithGoogle,
                       child: Container(
-                        padding: const EdgeInsets.all(15),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(9),
-                        ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 10,
+                                color: Colors.grey,
+                                offset: Offset(0, 5),
+                              )
+                            ]),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -176,17 +189,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               'assets/google_logo.png',
                               height: 20,
                               width: 20,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Sign in with Google',
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
                             ),
                           ],
                         ),

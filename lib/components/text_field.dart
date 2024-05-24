@@ -16,7 +16,7 @@ class MyTextField extends StatelessWidget {
     required this.obscureText,
     this.borderRadius = 5.0,
     required this.icon,
-    this.iconPadding = 15.0, // Default icon padding
+    this.iconPadding = 10.0, // Default icon padding
   }) : super(key: key);
 
   @override

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_app/components/text_box.dart';
 import 'package:provider/provider.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
@@ -88,9 +89,29 @@ class _UserScreenState extends State<UserScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-      ),
+     appBar:AppBar(
+  title: Row(
+    children: [
       
+      const SizedBox(width: 10,),
+      
+      Lottie.network(
+        'https://lottie.host/4e6b413e-2a2b-4cba-8654-153461902cb8/SFIgJXvg2r.json',
+        height: 40, // Adjust the height as needed
+      ),
+
+       const SizedBox(width: 20,),
+
+      Text(
+        'U S E R',
+        style: GoogleFonts.montserrat(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ],
+  ),
+),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,

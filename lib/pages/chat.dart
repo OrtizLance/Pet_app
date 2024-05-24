@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_app/pages/chatting.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -22,25 +23,33 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'P E T  H A V E N',
-          style: GoogleFonts.montserrat(),
+  title: Row(
+    children: [
+      
+      const SizedBox(width: 10,),
+      
+      Lottie.network(
+        'https://lottie.host/4e6b413e-2a2b-4cba-8654-153461902cb8/SFIgJXvg2r.json',
+        height: 40, // Adjust the height as needed
+      ),
+
+       const SizedBox(width: 20,),
+
+      Text(
+        'C H A T',
+        style: GoogleFonts.montserrat(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: signOut,
-          ),
-        ],
       ),
-      backgroundColor: Colors.grey[400], // Set your desired background color here
+    ],
+  ),
+),
+
+        backgroundColor: Colors.grey[400], // Set your desired background color here
+        
       body: _buildUserList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add functionality to start a new chat
-        },
-        child: const Icon(Icons.message),
-      ),
+    
     );
   }
 
@@ -48,6 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
       builder: (context, snapshot) {
+        const SizedBox(width: 20,);
         if (snapshot.hasError) {
           return Center(
             child: Text('Error loading users', style: GoogleFonts.montserrat()),
@@ -62,6 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
         return ListView(
           children: snapshot.data!.docs.map<Widget>((doc) {
+            
             Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
             if (data['email'] != currentUserEmail) {
               return Container(
@@ -72,7 +83,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundImage: data['photoURL'] != null ? NetworkImage(data['photoURL']) : null,

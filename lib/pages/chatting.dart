@@ -40,14 +40,25 @@ class _ChatPageState extends State<ChatPage> {
         title: Text(widget.receiverUserEmail),
       ),
       body: Column(
+        
         children: [
+          SizedBox(
+  height: 1.0, // Adjust the height to the desired value
+  child: Center(
+    child: Container(
+      height: 1.0,
+      color: Colors.grey[300], // Adjust the color as needed
+    ),
+  ),
+),
+
           // messages
           Expanded(
             child: _buildMessageList(),
           ),
 
           //user input
-
+   
           _buildMessageInput(),
 
           const SizedBox(height: 25),
@@ -111,37 +122,61 @@ class _ChatPageState extends State<ChatPage> {
 
   //build message input
   Widget _buildMessageInput() {
-    return Padding(
-
-      padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: Row(
-        children: [
-          Expanded(
-            child: MyTextField(
-              controller: _messageController,
-              hintText: "Enter Message",
-              obscureText: false,
-              icon: Icons.message,
-            ),
-          ),
-
-            const SizedBox(width: 15),
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.green,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              onPressed: sendMessage,
-              icon: const Icon(
-                Icons.arrow_upward,
-                size: 25, 
-                color: Colors.white,
+   
+    return Column(
+      children: [
+        SizedBox(
+  width: 2000, // Adjust the height to the desired value
+  child: Center(
+    child: Container(
+      
+      height: 1,
+      color: Colors.grey[300], // Adjust the color as needed
+    ),
+  ),
+),
+        Padding(
+          
+          
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          
+          child: Column(
+            children: [
+              
+        const SizedBox(height: 8),
+              Row(
+                
+                children: [
+                  
+                  
+                  
+                  
+                  Expanded(
+                    child: MyTextField(
+                      controller: _messageController,
+                      hintText: "Enter Message",
+                      obscureText: false,
+                      icon: Icons.message,
+                    ),
+                  ),
+              
+                    const SizedBox(width: 15),
+                  
+                    IconButton(
+                      onPressed: sendMessage,
+                      icon: const Icon(
+                        Icons.send,
+                        size: 25, 
+                        color: Colors.blue,
+                      ),
+                    ),
+                
+                ],
               ),
-            ),
-          )
-        ],
-      ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

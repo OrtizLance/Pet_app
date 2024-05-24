@@ -13,7 +13,7 @@ class Comment extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(20),
       ),
       margin: const EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.all(15),

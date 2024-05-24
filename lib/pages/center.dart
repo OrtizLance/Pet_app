@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pet_app/pages/chat.dart';
 import 'package:pet_app/pages/home.dart';
+import 'package:pet_app/pages/info.dart';
 import 'package:pet_app/pages/user.dart';
 import 'package:pet_app/services/auth/auth_services.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = const [
     HomePage(),
     ChatScreen(),
+    PetsHomeScreen(),
     UserScreen(),
   ];
 
@@ -40,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
         backgroundColor: Colors.grey[900], // Set background color to grey
-        selectedItemColor: Colors.red,
+        selectedItemColor: Colors.indigo[300],
         unselectedItemColor: Colors.grey, // Grey color for unselected items
         selectedFontSize: 14,
         unselectedFontSize: 12,
@@ -55,6 +57,11 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: 'Chat',
+            backgroundColor: Colors.grey[900], // Match background color
+          ),
+           BottomNavigationBarItem(
+            icon: Icon(Icons.pets),
+            label: 'Trivia',
             backgroundColor: Colors.grey[900], // Match background color
           ),
           BottomNavigationBarItem(

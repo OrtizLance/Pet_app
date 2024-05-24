@@ -18,7 +18,6 @@ class WallPost extends StatefulWidget {
     required this.user,
     required this.postId,
     required this.likes,
-    
   });
 
   @override
@@ -133,9 +132,7 @@ class _WallPostState extends State<WallPost> {
                         .catchError(
                             (error) => print("failed to delete post: $error"));
 
-
-
-                      Navigator.pop(context);
+                    Navigator.pop(context);
                   },
                   child: const Text(" Delete "),
                 )
@@ -147,9 +144,15 @@ class _WallPostState extends State<WallPost> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 10,
+              color: Colors.grey,
+              offset: Offset(0, 5),
+              )
+          ]),
       margin: const EdgeInsets.only(top: 25, left: 25, right: 25),
       padding: const EdgeInsets.all(25),
       child: Column(
@@ -200,10 +203,7 @@ class _WallPostState extends State<WallPost> {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    widget.likes.length.toString(),
-                    style: const TextStyle(color: Colors.grey),
-                  ),
+                 
                 ],
               ),
             ],
